@@ -4,14 +4,16 @@ from flask import render_template, request, redirect
 from flask import session
 import math
 from bson.objectid import ObjectId
+import os
+from dotenv import load_dotenv
 
-
+load_dotenv()
 
 
 app = Flask(__name__)
-app.secret_key = "secret123"
+app.secret_key = os.getenv("SECRET_KEY")
 
-client = MongoClient("mongodb://localhost:27017/")
+client = MongoClient(os.getenv("MONGO_URI"))
 db = client["contact_book"]
 
 users_collection = db["users"]
@@ -133,7 +135,7 @@ def add_contact():
             "phone": phone
         })
 
-        return redirect("/dashboard")
+        return redirect("/contact")
     
     return render_template("add_contact.html")
 
