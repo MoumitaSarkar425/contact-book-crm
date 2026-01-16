@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="flex justify-between p-4">
+    <h2 class="text-xl font-semibold mb-4">Contacts</h2>
+    <a href="/add-contact" class="px-4 py-4 text-sm bg-blue-600 text-white rounded justify-center"> Add Contact </a>
+</div>
+
+
+<div class="bg-white shadow rounded p-4">
+
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-blue-600">Your Contacts</h2>
+
+
+        <form method="GET" class="flex gap-2">
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="Search..."
+                class="border px-3 py-1 text-sm rounded"
+            >
+            <button class="bg-blue-600 text-white px-3 py-1 rounded text-sm">
+                Search
+            </button>
+        </form>
+    </div>
+
+    {% if contacts|length == 0 %}
+        <p class="text-gray-500 text-sm">No contacts found.</p>
+    {% else %}
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+        <table class="w-full border text-sm text-left">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-3 py-2 border">Name</th>
+                    <th class="px-3 py-2 border">Email</th>
+                    <th class="px-3 py-2 border">Phone</th>
+                    <th class="px-3 py-2 border text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="contactTable">
+                {% for c in contacts %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-3 py-2 border">{{ c.name }}</td>
+                    <td class="px-3 py-2 border">{{ c.email }}</td>
+                    <td class="px-3 py-2 border">{{ c.phone }}</td>
+                    <td class="px-3 py-2 border text-center">
+                        <a href="/edit/{{ c._id }}"
+                            class="px-3 py-1 text-xs bg-blue-600 text-white rounded">
+                                Edit
+                            </a>
+                        <a href="/delete/{{ c._id }}"
+                           class="px-3 py-1 text-xs bg-red-600 text-white rounded mx-5">
+                           Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="flex justify-center mt-4 gap-2 text-sm">
+        {% if page > 1 %}
+            <a href="?search={{ search }}&page={{ page - 1 }}"
+               class="px-3 py-1 border rounded">Prev</a>
+        {% endif %}
+
+        {% for p in range(1, total_pages + 1) %}
+            <a href="?search={{ search }}&page={{ p }}"
+               class="px-3 py-1 border rounded
+               {% if p == page %}bg-blue-600 text-white{% endif %}">
+               {{ p }}
+            </a>
+        {% endfor %}
+
+        {% if page < total_pages %}
+            <a href="?search={{ search }}&page={{ page + 1 }}"
+               class="px-3 py-1 border rounded">Next</a>
+        {% endif %}
+    </div>
+
+    {% endif %}
+</div>
+{% endblock %}
